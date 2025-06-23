@@ -3,6 +3,9 @@
 #include <QSerialPort>
 #include <QDebug>
 #include <QMessageBox>
+#include <QByteArray>
+#include <QDataStream>
+#include <QString>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -14,9 +17,9 @@ MainWindow::MainWindow(QWidget *parent)
     QList<QSerialPortInfo> availiblePorts = QSerialPortInfo::availablePorts(); // Получаем список COM портов
 
     ui->Connection->setReadOnly(true);
-    ui->Recived_RawData->setReadOnly(true);
+    ui->textEdit->setReadOnly(true);
 
-    ui->Recived_RawData->append("Подключенные COM порта:");
+    ui->textEdit->append("Подключенные COM порта:");
     for(const QSerialPortInfo &portInfo : availiblePorts){
         ui->ComPort->addItem(portInfo.portName()); // Забираем только номера портов для подключения в QComboBox
 
@@ -25,7 +28,11 @@ MainWindow::MainWindow(QWidget *parent)
                               .arg(portInfo.portName())
                               .arg(portInfo.description());
 
-        ui->Recived_RawData->append(portStr);
+        ui->textEdit->append(portStr);
+
+        ui->horizontalSliderPWM->setMinimum(0);
+        ui->horizontalSliderPWM->setMaximum(255);
+        // ui->labelPWM->
     }
 }
 
@@ -64,8 +71,16 @@ void MainWindow::on_pushButtonLedOFF_clicked()
 }
 
 // TODO переделать кнопку под 2-ю часть отправки данных
-void MainWindow::on_pushButton_3_clicked()
+void MainWindow::on_pushButtonSendData_clicked()
 {
+    if (serial->isOpen()){
+
+        QString dataToSend = QString::number(pwm);
+        QByteArray byteArray = dataToSend.toUtf8();
+        serial->write(byteArray);
+        serial->waitForBytesWritten(-1);
+
+    }
     // if (stateLed){
     //     serial->write("1");
     //     ui->label->setText("Светодиод включен");
@@ -100,12 +115,12 @@ void MainWindow::on_pushButtonConnectCOMport_clicked()
     serial->setFlowControl(QSerialPort::NoFlowControl);
     serial->open(QIODevice::ReadWrite);
 
-
+    connect(serial,&QSerialPort::readyRead,this, &MainWindow::receive_Data); // Без этой строчки не работает прием данных
 
     if (serial->isOpen()){
         ui->Connection->setText("Serial port подключен");
         ui->statusbar->showMessage(ui->ComPort->currentText());
-        // ui->statusbar->showMessage("Baud 115200");
+        ui->textEdit->clear();
     }
     else{
         ui->Connection->setText("Serial port не подключен");
@@ -119,5 +134,60 @@ void MainWindow::on_pushButtonDisconnectCOMport_clicked()
     serial->close();
     ui->Connection->setText("Serial port отключен");
     ui->statusbar->clearMessage();
+}
+
+void MainWindow::receive_Data()
+{
+    // TODO добавить в запись разработки сравнение двух вариантов функции чтения данных из COM порта
+    // if (serial->isOpen()){
+    //     QByteArray data = serial->readAll();
+    //     QString receivedData = QString::fromUtf8(data);
+    //     ui->textEdit->append(receivedData);
+    // }
+
+
+    // Вариант 2 (лучше)
+    if (serial->isOpen()){
+        while (serial->bytesAvailable()){
+            dataFromSerial += serial->readAll();
+            if (dataFromSerial.at(dataFromSerial.length() - 1) == char(10)){
+                IsDataReceived = true;
+            }
+            if (IsDataReceived == true){
+                ui->textEdit->append(dataFromSerial);
+                dataFromSerial = "";
+                IsDataReceived = false;
+            }
+        }
+    }
+
+}
+
+// Слайдер для установки PWM
+void MainWindow::on_horizontalSliderPWM_valueChanged(int value)
+{
+    pwm = value;
+}
+
+//---------------Вторая страница(ч.2 задания)---------------//
+
+// Кнопка очистки поля вывода информации
+void MainWindow::on_pushButtonClearTextEdit_clicked()
+{
+    if (serial->isOpen()){
+        ui->textEdit->clear();
+    }
+}
+
+
+void MainWindow::on_pushButtonLedON_2_clicked()
+{
+    stateLed = true;
+}
+
+
+void MainWindow::on_pushButtonLedOFF_2_clicked()
+{
+    stateLed = false;
 }
 
