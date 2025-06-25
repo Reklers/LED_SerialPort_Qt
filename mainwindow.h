@@ -39,7 +39,7 @@ private slots:
 
     void on_pushButtonConnectCOMport_clicked();
 
-    void on_pushButtonDisconnectCOMport_clicked();
+    // void on_pushButtonDisconnectCOMport_clicked();
 
     void on_horizontalSliderPWM_valueChanged(int value);
 
@@ -55,11 +55,19 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QSerialPort *serial;
-    bool stateLed;
-    int pwm;
+    bool stateLed = false;
+    int pwm = 0;
+    int indexPageButtonSendData;
+    int indexPagepushButtonLedON;
+    int indexPagepushButtonLedOFF;
+    int clickConnectButton = 0;
     bool IsDataReceived;
+    bool flagConnect;
     QStackedWidget *stackedWidget;
     QString dataFromSerial;
+    QString dataNumPage;
+    QString sep = ";";
+    QString stateLedStr;
 
 };
 #endif // MAINWINDOW_H

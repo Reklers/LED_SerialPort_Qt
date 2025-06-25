@@ -24,7 +24,7 @@
     <item row="0" column="0">
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="partOneWidget">
        <widget class="QLabel" name="label_2">
@@ -150,17 +150,10 @@
             </property>
            </widget>
           </item>
-          <item>
-           <widget class="QPushButton" name="pushButtonDisconnectCOMport">
-            <property name="text">
-             <string>Disconnect</string>
-            </property>
-           </widget>
-          </item>
          </layout>
         </widget>
        </widget>
-       <widget class="QWidget" name="">
+       <widget class="QWidget" name="layoutWidget">
         <property name="geometry">
          <rect>
           <x>10</x>
@@ -210,7 +203,7 @@
          <string>Первая часть</string>
         </property>
        </widget>
-       <widget class="QWidget" name="">
+       <widget class="QWidget" name="layoutWidget">
         <property name="geometry">
          <rect>
           <x>130</x>
@@ -246,7 +239,7 @@
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="">
+       <widget class="QWidget" name="layoutWidget">
         <property name="geometry">
          <rect>
           <x>0</x>
@@ -257,7 +250,7 @@
         </property>
         <layout class="QVBoxLayout" name="verticalLayout">
          <item>
-          <widget class="QLabel" name="label_5">
+          <widget class="QLabel" name="labelStateLed2">
            <property name="font">
             <font>
              <family>Bebas Neue Cyrillic</family>
