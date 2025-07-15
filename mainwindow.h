@@ -7,7 +7,7 @@
 #include <QStackedWidget>
 #include <QDebug>
 #include <QMessageBox>
-#include <QDataStream>
+// #include <QDataStream>
 
 
 QT_BEGIN_NAMESPACE
@@ -25,38 +25,36 @@ public:
     ~MainWindow();
 
 private slots:
-    // void serialRecieve(); //получение данных
-
     void on_pushButtonLedON_clicked();
 
     void on_pushButtonLedOFF_clicked();
 
     void on_pushButtonSendData_clicked();
 
-    void on_pushButtonSecondPart_clicked();
-
-    void on_pushButtonFirstPart_clicked();
-
     void on_pushButtonConnectCOMport_clicked();
 
-    // void on_pushButtonDisconnectCOMport_clicked();
+    void printComPorts();
 
     void on_horizontalSliderPWM_valueChanged(int value);
 
     void receive_Data();
 
-
     void on_pushButtonClearTextEdit_clicked();
 
-    void on_pushButtonLedON_2_clicked();
+    void on_secondPart_clicked(bool checked);
 
-    void on_pushButtonLedOFF_2_clicked();
+    void on_updateComPorts_clicked();
+
+    // bool checkComPort();
+
+    void on_horizontalSliderDelay_valueChanged(int value);
 
 private:
     Ui::MainWindow *ui;
     QSerialPort *serial;
     bool stateLed = false;
     int pwm = 0;
+    int delay = 0;
     int indexPageButtonSendData;
     int indexPagepushButtonLedON;
     int indexPagepushButtonLedOFF;
